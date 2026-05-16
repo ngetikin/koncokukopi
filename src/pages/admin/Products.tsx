@@ -124,16 +124,16 @@ export default function AdminProducts() {
 
   return (
     <StaffLayout adminOnly>
-      <div className="space-y-8">
-        <header className="flex justify-between items-end">
+      <div className="space-y-6 sm:space-y-8">
+        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 sm:gap-4">
           <div>
-            <h1 className="text-3xl font-light tracking-tight">Product Management</h1>
-            <p className="text-brand-secondary text-xs uppercase tracking-[0.3em] mt-1">Manage your menu offerings</p>
+            <h1 className="text-2xl sm:text-3xl font-light tracking-tight">Product Management</h1>
+            <p className="text-brand-secondary text-[10px] sm:text-xs uppercase tracking-[0.3em] mt-1">Manage your menu offerings</p>
           </div>
-          <div className="flex gap-4">
+          <div className="flex gap-2 sm:gap-4 w-full sm:w-auto">
              <button 
               onClick={() => setIsCategoryModalOpen(true)}
-              className="bg-neutral-900 border border-white/5 px-6 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-white/5 transition-all flex items-center gap-2"
+              className="flex-1 sm:flex-none justify-center bg-neutral-900 border border-white/5 px-4 sm:px-6 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-[0.2em] sm:tracking-[0.3em] hover:bg-white/5 transition-all flex items-center gap-2 whitespace-nowrap"
             >
               <CatIcon size={14} /> Categories
             </button>
@@ -143,7 +143,7 @@ export default function AdminProducts() {
                 setFormData({ name: "", categoryId: "", price: "", imageUrl: "", isAvailable: true });
                 setIsModalOpen(true);
               }}
-              className="bg-brand-accent text-white px-8 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-[0.4em] hover:brightness-110 transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(217,119,6,0.3)]"
+              className="flex-1 sm:flex-none justify-center bg-brand-accent text-white px-4 sm:px-8 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-[0.2em] sm:tracking-[0.4em] hover:brightness-110 transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(217,119,6,0.3)] whitespace-nowrap"
             >
               <Plus size={14} /> Add Product
             </button>
@@ -151,48 +151,48 @@ export default function AdminProducts() {
         </header>
 
         {/* Table/Grid */}
-        <div className="bg-neutral-900/50 border border-white/5 rounded-[40px] overflow-hidden">
-          <table className="w-full text-left">
+        <div className="bg-neutral-900/50 border border-white/5 rounded-3xl sm:rounded-[40px] overflow-hidden max-w-full overflow-x-auto">
+          <table className="w-full text-left min-w-[700px]">
             <thead>
-              <tr className="border-b border-white/5">
-                <th className="p-8 text-[10px] uppercase tracking-[0.4em] text-brand-secondary">Image</th>
-                <th className="p-8 text-[10px] uppercase tracking-[0.4em] text-brand-secondary">Details</th>
-                <th className="p-8 text-[10px] uppercase tracking-[0.4em] text-brand-secondary">Category</th>
-                <th className="p-8 text-[10px] uppercase tracking-[0.4em] text-brand-secondary">Price</th>
-                <th className="p-8 text-[10px] uppercase tracking-[0.4em] text-brand-secondary">Status</th>
-                <th className="p-8 text-[10px] uppercase tracking-[0.4em] text-brand-secondary">Actions</th>
+              <tr className="border-b border-white/5 bg-black/20">
+                <th className="p-4 sm:p-8 text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] text-brand-secondary whitespace-nowrap">Image</th>
+                <th className="p-4 sm:p-8 text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] text-brand-secondary">Details</th>
+                <th className="p-4 sm:p-8 text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] text-brand-secondary">Category</th>
+                <th className="p-4 sm:p-8 text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] text-brand-secondary">Price</th>
+                <th className="p-4 sm:p-8 text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] text-brand-secondary">Status</th>
+                <th className="p-4 sm:p-8 text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] text-brand-secondary whitespace-nowrap">Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={6} className="p-20 text-center animate-pulse text-brand-secondary uppercase tracking-widest text-xs">Loading products...</td></tr>
+                <tr><td colSpan={6} className="p-10 sm:p-20 text-center animate-pulse text-brand-secondary uppercase tracking-widest text-xs">Loading products...</td></tr>
               ) : products.length === 0 ? (
-                <tr><td colSpan={6} className="p-20 text-center text-brand-secondary uppercase tracking-widest text-xs">No products found.</td></tr>
+                <tr><td colSpan={6} className="p-10 sm:p-20 text-center text-brand-secondary uppercase tracking-widest text-xs">No products found.</td></tr>
               ) : (
                 products.map(p => (
                   <tr key={p.id} className="border-b border-white/5 hover:bg-white/5 transition-all">
-                    <td className="p-6">
-                      <div className="w-16 h-16 rounded-xl bg-black overflow-hidden flex items-center justify-center">
+                    <td className="p-4 sm:p-6">
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl bg-black overflow-hidden flex items-center justify-center">
                         {p.imageUrl ? <img src={p.imageUrl} className="w-full h-full object-cover" /> : <Coffee className="text-white/10" size={20} />}
                       </div>
                     </td>
-                    <td className="p-6">
-                       <p className="font-medium">{p.name}</p>
+                    <td className="p-4 sm:p-6">
+                       <p className="font-medium text-sm sm:text-base">{p.name}</p>
                     </td>
-                    <td className="p-6">
-                       <span className="text-xs text-brand-secondary bg-white/5 px-3 py-1 rounded-full uppercase tracking-tighter">
+                    <td className="p-4 sm:p-6">
+                       <span className="text-[10px] sm:text-xs text-brand-secondary bg-white/5 px-2 sm:px-3 py-1 rounded-full uppercase tracking-tighter whitespace-nowrap">
                          {categories.find(c => c.id === p.categoryId)?.name || 'Uncategorized'}
                        </span>
                     </td>
-                    <td className="p-6 font-mono text-brand-accent">
+                    <td className="p-4 sm:p-6 font-mono text-brand-accent text-sm sm:text-base">
                        {p.price.toLocaleString('id-ID')}k
                     </td>
-                    <td className="p-6">
-                       <span className={`text-[9px] uppercase font-bold tracking-widest px-3 py-1 rounded-md ${p.isAvailable ? "bg-green-500/10 text-green-400" : "bg-red-500/10 text-red-400"}`}>
+                    <td className="p-4 sm:p-6">
+                       <span className={`text-[8px] sm:text-[9px] uppercase font-bold tracking-widest px-2 sm:px-3 py-1 rounded-md whitespace-nowrap ${p.isAvailable ? "bg-green-500/10 text-green-400" : "bg-red-500/10 text-red-400"}`}>
                          {p.isAvailable ? "Active" : "Out of Stock"}
                        </span>
                     </td>
-                    <td className="p-6 flex gap-2">
+                    <td className="p-4 sm:p-6 flex gap-2">
                        <button 
                         disabled={isProcessing}
                         onClick={() => {
@@ -206,14 +206,14 @@ export default function AdminProducts() {
                           });
                           setIsModalOpen(true);
                         }}
-                        className="p-3 bg-white/5 hover:bg-brand-accent hover:text-white rounded-xl transition-all disabled:opacity-30"
+                        className="p-2 sm:p-3 bg-white/5 hover:bg-brand-accent hover:text-white rounded-xl transition-all disabled:opacity-30"
                        >
                          <Edit2 size={14} />
                        </button>
                        <button 
                         disabled={isProcessing}
                         onClick={() => setDeleteProductId(p.id)}
-                        className="p-3 bg-white/5 hover:bg-red-500 hover:text-white rounded-xl transition-all disabled:opacity-30"
+                        className="p-2 sm:p-3 bg-white/5 hover:bg-red-500 hover:text-white rounded-xl transition-all disabled:opacity-30"
                        >
                          <Trash2 size={14} />
                        </button>
@@ -229,16 +229,16 @@ export default function AdminProducts() {
       {/* Product Modal */}
       <AnimatePresence>
         {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => !isProcessing && setIsModalOpen(false)} className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="w-full max-w-xl bg-neutral-900 border border-white/10 rounded-[40px] p-10 relative z-10 shadow-2xl">
-               <div className="flex justify-between items-center mb-10">
-                  <h2 className="text-2xl font-light">{editProduct ? "Edit Product" : "New Item"}</h2>
-                  <button disabled={isProcessing} onClick={() => setIsModalOpen(false)} className="disabled:opacity-30"><X size={20} /></button>
+            <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className="w-full max-w-xl bg-neutral-900 border border-white/10 rounded-[30px] sm:rounded-[40px] p-6 sm:p-10 relative z-10 shadow-2xl max-h-[90vh] overflow-y-auto">
+               <div className="flex justify-between items-center mb-6 sm:mb-10">
+                  <h2 className="text-xl sm:text-2xl font-light">{editProduct ? "Edit Product" : "New Item"}</h2>
+                  <button disabled={isProcessing} onClick={() => setIsModalOpen(false)} className="disabled:opacity-30 p-2 border border-white/10 rounded-full hover:bg-white/5"><X size={20} /></button>
                </div>
                
-               <form onSubmit={handleProductSubmit} className="space-y-6">
-                  <div className="grid grid-cols-2 gap-6">
+               <form onSubmit={handleProductSubmit} className="space-y-4 sm:space-y-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <div className="space-y-2">
                       <label className="text-[10px] uppercase font-bold tracking-[0.3em] text-brand-secondary ml-1">Name</label>
                       <input 
@@ -247,7 +247,7 @@ export default function AdminProducts() {
                         type="text" 
                         value={formData.name}
                         onChange={(e) => setFormData({...formData, name: e.target.value})}
-                        className="w-full bg-black border border-white/10 rounded-2xl px-6 py-4 text-sm focus:outline-none focus:border-brand-accent transition-all disabled:opacity-50"
+                        className="w-full bg-black border border-white/10 rounded-2xl px-4 sm:px-6 py-3 sm:py-4 text-sm focus:outline-none focus:border-brand-accent transition-all disabled:opacity-50"
                       />
                     </div>
                     <div className="space-y-2">
@@ -257,7 +257,7 @@ export default function AdminProducts() {
                         disabled={isProcessing}
                         value={formData.categoryId}
                         onChange={(e) => setFormData({...formData, categoryId: e.target.value})}
-                        className="w-full bg-black border border-white/10 rounded-2xl px-6 py-4 text-sm focus:outline-none focus:border-brand-accent transition-all appearance-none disabled:opacity-50"
+                        className="w-full bg-black border border-white/10 rounded-2xl px-4 sm:px-6 py-3 sm:py-4 text-sm focus:outline-none focus:border-brand-accent transition-all appearance-none disabled:opacity-50"
                       >
                         <option value="">Select Category</option>
                         {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -265,7 +265,7 @@ export default function AdminProducts() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <div className="space-y-2">
                       <label className="text-[10px] uppercase font-bold tracking-[0.3em] text-brand-secondary ml-1">Price (k)</label>
                       <input 
@@ -274,7 +274,7 @@ export default function AdminProducts() {
                         type="number" 
                         value={formData.price}
                         onChange={(e) => setFormData({...formData, price: e.target.value})}
-                        className="w-full bg-black border border-white/10 rounded-2xl px-6 py-4 text-sm focus:outline-none focus:border-brand-accent transition-all disabled:opacity-50"
+                        className="w-full bg-black border border-white/10 rounded-2xl px-4 sm:px-6 py-3 sm:py-4 text-sm focus:outline-none focus:border-brand-accent transition-all disabled:opacity-50"
                       />
                     </div>
                     <div className="space-y-2">
@@ -285,12 +285,12 @@ export default function AdminProducts() {
                         placeholder="https://..."
                         value={formData.imageUrl}
                         onChange={(e) => setFormData({...formData, imageUrl: e.target.value})}
-                        className="w-full bg-black border border-white/10 rounded-2xl px-6 py-4 text-sm focus:outline-none focus:border-brand-accent transition-all disabled:opacity-50"
+                        className="w-full bg-black border border-white/10 rounded-2xl px-4 sm:px-6 py-3 sm:py-4 text-sm focus:outline-none focus:border-brand-accent transition-all disabled:opacity-50"
                       />
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4 py-4">
+                  <div className="flex items-center gap-4 py-2 sm:py-4">
                     <button 
                       type="button"
                       disabled={isProcessing}
@@ -305,7 +305,7 @@ export default function AdminProducts() {
                   <button 
                     disabled={isProcessing}
                     type="submit"
-                    className="w-full bg-brand-text text-brand-bg rounded-2xl py-5 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-white transition-all shadow-xl disabled:opacity-30"
+                    className="w-full bg-brand-text text-brand-bg rounded-2xl py-4 sm:py-5 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-white transition-all shadow-xl disabled:opacity-30"
                   >
                     {isProcessing ? "Processing..." : (editProduct ? "Update Item" : "Create Item")}
                   </button>
@@ -318,18 +318,18 @@ export default function AdminProducts() {
       {/* Categories Modal */}
       <AnimatePresence>
         {isCategoryModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => !isProcessing && setIsCategoryModalOpen(false)} className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="w-full max-w-md bg-neutral-900 border border-white/10 rounded-[40px] p-10 relative z-10 shadow-2xl">
-               <div className="flex justify-between items-center mb-8">
-                  <h2 className="text-2xl font-light">Categories</h2>
-                  <button disabled={isProcessing} onClick={() => setIsCategoryModalOpen(false)} className="disabled:opacity-30"><X size={20} /></button>
+            <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className="w-full max-w-md bg-neutral-900 border border-white/10 rounded-[30px] sm:rounded-[40px] p-6 sm:p-10 relative z-10 shadow-2xl max-h-[90vh] flex flex-col">
+               <div className="flex justify-between items-center mb-6 sm:mb-8 shrink-0">
+                  <h2 className="text-xl sm:text-2xl font-light">Categories</h2>
+                  <button disabled={isProcessing} onClick={() => setIsCategoryModalOpen(false)} className="disabled:opacity-30 p-2 border border-white/10 rounded-full hover:bg-white/5"><X size={20} /></button>
                </div>
 
-               <div className="space-y-4 mb-8">
+               <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8 overflow-y-auto flex-1 min-h-0">
                   {categories.map(c => (
-                    <div key={c.id} className="flex justify-between items-center bg-black/40 border border-white/5 rounded-xl px-6 py-4">
-                       <span className="text-sm">{c.name}</span>
+                    <div key={c.id} className="flex justify-between items-center bg-black/40 border border-white/5 rounded-xl px-4 sm:px-6 py-3 sm:py-4">
+                       <span className="text-xs sm:text-sm">{c.name}</span>
                        <div className="flex gap-2">
                          <button 
                           disabled={isProcessing}
@@ -337,35 +337,40 @@ export default function AdminProducts() {
                             setEditingCategory(c);
                             setNewCatName(c.name);
                           }} 
-                          className="text-brand-secondary hover:text-brand-accent disabled:opacity-30"
+                          className="p-1 sm:p-2 text-brand-secondary hover:text-brand-accent disabled:opacity-30 bg-white/5 rounded-lg"
                          >
                             <Edit2 size={14} />
                          </button>
                          <button 
                           disabled={isProcessing}
                           onClick={() => setDeleteCategoryId(c.id)} 
-                          className="text-brand-secondary hover:text-red-400 disabled:opacity-30"
+                          className="p-1 sm:p-2 text-brand-secondary hover:text-red-400 disabled:opacity-30 bg-white/5 rounded-lg"
                          >
                             <Trash2 size={14} />
                          </button>
                        </div>
                     </div>
                   ))}
+                  {categories.length === 0 && (
+                     <div className="text-center text-brand-secondary text-xs uppercase tracking-widest py-8">
+                       No categories yet
+                     </div>
+                  )}
                </div>
 
-               <div className="flex gap-2">
+               <div className="flex gap-2 shrink-0">
                  <input 
                     disabled={isProcessing}
                     type="text" 
                     placeholder={editingCategory ? "Edit Category Name..." : "New Category..."}
                     value={newCatName}
                     onChange={(e) => setNewCatName(e.target.value)}
-                    className="flex-1 bg-black border border-white/10 rounded-xl px-6 py-3 text-sm focus:outline-none focus:border-brand-accent transition-all disabled:opacity-50"
+                    className="flex-1 min-w-0 bg-black border border-white/10 rounded-xl px-4 sm:px-6 py-3 text-sm focus:outline-none focus:border-brand-accent transition-all disabled:opacity-50"
                  />
                  <button 
                   disabled={isProcessing || !newCatName}
                   onClick={handleSaveCategory}
-                  className="bg-brand-accent p-3 rounded-xl hover:brightness-110 disabled:opacity-30"
+                  className="bg-brand-accent p-3 rounded-xl hover:brightness-110 disabled:opacity-30 shrink-0 flex items-center justify-center text-white"
                  >
                     {isProcessing ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : (editingCategory ? <Check size={20} /> : <Plus size={20} />)}
                  </button>
@@ -376,7 +381,7 @@ export default function AdminProducts() {
                       setEditingCategory(null);
                       setNewCatName("");
                     }}
-                    className="bg-neutral-800 p-3 rounded-xl hover:bg-neutral-700 disabled:opacity-30"
+                    className="bg-neutral-800 p-3 rounded-xl hover:bg-neutral-700 disabled:opacity-30 shrink-0 text-white"
                    >
                      <X size={20} />
                    </button>
@@ -389,19 +394,19 @@ export default function AdminProducts() {
       {/* Delete Confirmation Modal */}
       <AnimatePresence>
         {(deleteProductId || deleteCategoryId) && (
-          <div className="fixed inset-0 z-[70] flex items-center justify-center p-6">
+          <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 sm:p-6">
              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => !isProcessing && (setDeleteProductId(null), setDeleteCategoryId(null))} className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
-             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="w-full max-w-sm bg-neutral-900 border border-white/10 rounded-[30px] p-8 relative z-10 shadow-2xl text-center">
-                <h3 className="text-xl font-light mb-2">Are you sure?</h3>
-                <p className="text-brand-secondary text-sm mb-8">This action cannot be undone.</p>
-                <div className="flex gap-4">
+             <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className="w-full max-w-sm bg-neutral-900 border border-white/10 rounded-[30px] p-6 sm:p-8 relative z-10 shadow-2xl text-center">
+                <h3 className="text-lg sm:text-xl font-light mb-2">Are you sure?</h3>
+                <p className="text-brand-secondary text-xs sm:text-sm mb-6 sm:mb-8">This action cannot be undone.</p>
+                <div className="flex gap-3 sm:gap-4 flex-col sm:flex-row">
                   <button 
                     disabled={isProcessing}
                     onClick={() => {
                         setDeleteProductId(null);
                         setDeleteCategoryId(null);
                     }}
-                    className="flex-1 bg-white/5 py-4 rounded-xl text-[10px] uppercase font-bold tracking-widest hover:bg-white/10 transition-all disabled:opacity-30"
+                    className="w-full sm:flex-1 bg-white/5 py-3 sm:py-4 rounded-xl text-[10px] uppercase font-bold tracking-widest hover:bg-white/10 transition-all disabled:opacity-30 order-2 sm:order-1"
                   >
                     Cancel
                   </button>
@@ -411,7 +416,7 @@ export default function AdminProducts() {
                         if (deleteProductId) deleteProduct(deleteProductId);
                         if (deleteCategoryId) handleDeleteCategory(deleteCategoryId);
                     }}
-                    className="flex-1 bg-red-500/10 text-red-400 py-4 rounded-xl text-[10px] uppercase font-bold tracking-widest hover:bg-red-500 hover:text-white transition-all disabled:opacity-30"
+                    className="w-full sm:flex-1 bg-red-500/10 text-red-400 py-3 sm:py-4 rounded-xl text-[10px] uppercase font-bold tracking-widest hover:bg-red-500 hover:text-white transition-all disabled:opacity-30 order-1 sm:order-2"
                   >
                     {isProcessing ? "Processing..." : "Delete"}
                   </button>

@@ -42,52 +42,52 @@ export default function AdminTransactions() {
 
   return (
     <StaffLayout>
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8">
         <header>
-          <h1 className="text-3xl font-light tracking-tight">Transaction History</h1>
-          <p className="text-brand-secondary text-xs uppercase tracking-[0.3em] mt-1">Review past sales and invoices</p>
+          <h1 className="text-2xl sm:text-3xl font-light tracking-tight">Transaction History</h1>
+          <p className="text-brand-secondary text-[10px] sm:text-xs uppercase tracking-[0.3em] mt-1">Review past sales and invoices</p>
         </header>
 
-        <div className="bg-neutral-900/50 border border-white/5 rounded-[40px] overflow-hidden">
-          <table className="w-full text-left">
+        <div className="bg-neutral-900/50 border border-white/5 rounded-3xl sm:rounded-[40px] overflow-hidden max-w-full overflow-x-auto">
+          <table className="w-full text-left min-w-[700px]">
             <thead>
-              <tr className="border-b border-white/5">
-                <th className="p-8 text-[10px] uppercase tracking-[0.4em] text-brand-secondary">Invoice</th>
-                <th className="p-8 text-[10px] uppercase tracking-[0.4em] text-brand-secondary">Date</th>
-                <th className="p-8 text-[10px] uppercase tracking-[0.4em] text-brand-secondary">Items</th>
-                <th className="p-8 text-[10px] uppercase tracking-[0.4em] text-brand-secondary">Total</th>
-                <th className="p-8 text-[10px] uppercase tracking-[0.4em] text-brand-secondary">Cashier</th>
-                <th className="p-8 text-[10px] uppercase tracking-[0.4em] text-brand-secondary text-right">Actions</th>
+              <tr className="border-b border-white/5 bg-black/20">
+                <th className="p-4 sm:p-8 text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] text-brand-secondary whitespace-nowrap">Invoice</th>
+                <th className="p-4 sm:p-8 text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] text-brand-secondary whitespace-nowrap">Date</th>
+                <th className="p-4 sm:p-8 text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] text-brand-secondary">Items</th>
+                <th className="p-4 sm:p-8 text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] text-brand-secondary">Total</th>
+                <th className="p-4 sm:p-8 text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] text-brand-secondary">Cashier</th>
+                <th className="p-4 sm:p-8 text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.4em] text-brand-secondary text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={6} className="p-20 text-center animate-pulse text-brand-secondary uppercase tracking-widest text-xs">Loading history...</td></tr>
+                <tr><td colSpan={6} className="p-10 sm:p-20 text-center animate-pulse text-brand-secondary uppercase tracking-widest text-xs">Loading history...</td></tr>
               ) : transactions.length === 0 ? (
-                <tr><td colSpan={6} className="p-20 text-center text-brand-secondary uppercase tracking-widest text-xs">No transactions yet.</td></tr>
+                <tr><td colSpan={6} className="p-10 sm:p-20 text-center text-brand-secondary uppercase tracking-widest text-xs">No transactions yet.</td></tr>
               ) : (
                 transactions.map(t => (
                   <tr key={t.id} className="border-b border-white/5 hover:bg-white/5 transition-all group">
-                    <td className="p-8 font-mono text-xs">{t.invoiceCode}</td>
-                    <td className="p-8 text-xs text-brand-secondary">
+                    <td className="p-4 sm:p-8 font-mono text-xs whitespace-nowrap">{t.invoiceCode}</td>
+                    <td className="p-4 sm:p-8 text-[10px] sm:text-xs text-brand-secondary whitespace-nowrap">
                       {t.createdAt?.toDate?.() ? t.createdAt.toDate().toLocaleDateString('id-ID') : 'Recently'} {t.createdAt?.toDate?.() ? t.createdAt.toDate().toLocaleTimeString('id-ID') : ''}
                     </td>
-                    <td className="p-8">
-                       <div className="space-y-1">
+                    <td className="p-4 sm:p-8">
+                       <div className="space-y-1 sm:max-w-[200px]">
                          {t.items.map((item, i) => (
-                           <p key={i} className="text-[10px] text-brand-secondary truncate max-w-[200px]">
+                           <p key={i} className="text-[10px] text-brand-secondary truncate">
                              {item.qty}x {item.name}
                            </p>
                          ))}
                        </div>
                     </td>
-                    <td className="p-8 font-mono text-brand-accent">
+                    <td className="p-4 sm:p-8 font-mono text-brand-accent text-sm sm:text-base">
                        {t.total.toLocaleString('id-ID')}k
                     </td>
-                    <td className="p-8 text-[10px] uppercase tracking-widest text-brand-secondary">
+                    <td className="p-4 sm:p-8 text-[9px] sm:text-[10px] uppercase tracking-widest text-brand-secondary whitespace-nowrap">
                        ID: {t.cashierId?.slice(-6)}
                     </td>
-                    <td className="p-8 text-right">
+                    <td className="p-4 sm:p-8 text-right">
                        <button 
                         disabled={isProcessing}
                         onClick={() => deleteTransaction(t.id)}

@@ -49,40 +49,40 @@ export default function AdminReports() {
 
   return (
     <StaffLayout adminOnly>
-      <div className="space-y-12">
+      <div className="space-y-8 sm:space-y-12">
         <header>
-          <h1 className="text-3xl font-light tracking-tight">Daily Reports</h1>
-          <p className="text-brand-secondary text-xs uppercase tracking-[0.3em] mt-1">Overview of today's performance</p>
+          <h1 className="text-2xl sm:text-3xl font-light tracking-tight">Daily Reports</h1>
+          <p className="text-brand-secondary text-[10px] sm:text-xs uppercase tracking-[0.3em] mt-1">Overview of today's performance</p>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-           <div className="bg-neutral-900/50 border border-white/5 rounded-[40px] p-10 flex flex-col items-center justify-center text-center">
-              <span className="text-[10px] uppercase font-bold tracking-[0.4em] text-brand-secondary mb-4">Total Revenue Today</span>
-              <span className="text-5xl font-light text-brand-accent mb-2">{stats.totalSales.toLocaleString('id-ID')}k</span>
-              <p className="text-xs text-brand-secondary/40 tracking-widest uppercase">Indonesian Rupiah (IDR)</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
+           <div className="bg-neutral-900/50 border border-white/5 rounded-3xl sm:rounded-[40px] p-6 sm:p-10 flex flex-col items-center justify-center text-center">
+              <span className="text-[10px] uppercase font-bold tracking-[0.3em] sm:tracking-[0.4em] text-brand-secondary mb-2 sm:mb-4">Total Revenue Today</span>
+              <span className="text-4xl sm:text-5xl font-light text-brand-accent mb-2">{stats.totalSales.toLocaleString('id-ID')}k</span>
+              <p className="text-[10px] sm:text-xs text-brand-secondary/40 tracking-widest uppercase">Indonesian Rupiah (IDR)</p>
            </div>
-           <div className="bg-neutral-900/50 border border-white/5 rounded-[40px] p-10 flex flex-col items-center justify-center text-center">
-              <span className="text-[10px] uppercase font-bold tracking-[0.4em] text-brand-secondary mb-4">Successful Transactions</span>
-              <span className="text-5xl font-light text-white mb-2">{stats.totalTrans}</span>
-              <p className="text-xs text-brand-secondary/40 tracking-widest uppercase">Orders Completed Today</p>
+           <div className="bg-neutral-900/50 border border-white/5 rounded-3xl sm:rounded-[40px] p-6 sm:p-10 flex flex-col items-center justify-center text-center">
+              <span className="text-[10px] uppercase font-bold tracking-[0.3em] sm:tracking-[0.4em] text-brand-secondary mb-2 sm:mb-4">Successful Transactions</span>
+              <span className="text-4xl sm:text-5xl font-light text-white mb-2">{stats.totalTrans}</span>
+              <p className="text-[10px] sm:text-xs text-brand-secondary/40 tracking-widest uppercase">Orders Completed Today</p>
            </div>
         </div>
 
-        <div className="space-y-8">
-           <h2 className="text-xl font-light tracking-tight">Top 5 Best Selling Products</h2>
-           <div className="bg-neutral-900/50 border border-white/5 rounded-[40px] p-10 h-[400px]">
+        <div className="space-y-6 sm:space-y-8">
+           <h2 className="text-lg sm:text-xl font-light tracking-tight">Top 5 Best Selling Products</h2>
+           <div className="bg-neutral-900/50 border border-white/5 rounded-3xl sm:rounded-[40px] p-4 sm:p-10 h-[300px] sm:h-[400px]">
               {loading ? (
-                <div className="h-full flex items-center justify-center animate-pulse text-brand-secondary uppercase tracking-[0.3em] text-xs">Generating data...</div>
+                <div className="h-full flex items-center justify-center animate-pulse text-brand-secondary uppercase tracking-[0.3em] text-[10px] sm:text-xs text-center">Generating data...</div>
               ) : data.length === 0 ? (
-                <div className="h-full flex items-center justify-center text-brand-secondary uppercase tracking-[0.3em] text-xs">No data for today.</div>
+                <div className="h-full flex items-center justify-center text-brand-secondary uppercase tracking-[0.3em] text-[10px] sm:text-xs text-center">No data for today.</div>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={data} layout="vertical" margin={{ left: 40, right: 40 }}>
+                  <BarChart data={data} layout="vertical" margin={{ left: window.innerWidth < 640 ? 0 : 40, right: window.innerWidth < 640 ? 20 : 40 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#262626" />
                     <XAxis type="number" hide />
-                    <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fill: '#B8B8B8', fontSize: 10, letterSpacing: '0.1em' }} width={100} />
-                    <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ backgroundColor: '#171717', border: '1px solid #262626', fontSize: '12px' }} />
-                    <Bar dataKey="value" radius={[0, 10, 10, 0]} barSize={20}>
+                    <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fill: '#B8B8B8', fontSize: window.innerWidth < 640 ? 8 : 10, letterSpacing: '0.1em' }} width={window.innerWidth < 640 ? 80 : 100} />
+                    <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ backgroundColor: '#171717', border: '1px solid #262626', fontSize: '10px' }} />
+                    <Bar dataKey="value" radius={[0, 10, 10, 0]} barSize={window.innerWidth < 640 ? 12 : 20}>
                       {data.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}

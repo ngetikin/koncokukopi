@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import StaffSidebar from './Sidebar';
+import { Menu } from 'lucide-react';
 
 interface StaffLayoutProps {
   children: React.ReactNode;
@@ -10,6 +11,7 @@ interface StaffLayoutProps {
 
 export default function StaffLayout({ children, adminOnly }: StaffLayoutProps) {
   const { user, profile, loading, isAdmin, isStaff } = useAuth();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   if (loading) return (
     <div className="min-h-screen bg-brand-bg flex items-center justify-center">
@@ -27,9 +29,23 @@ export default function StaffLayout({ children, adminOnly }: StaffLayoutProps) {
 
   return (
     <div className="flex bg-brand-bg text-brand-text min-h-screen font-sans noise-bg">
-      <StaffSidebar />
-      <main className="flex-1 ml-64 p-8 relative z-10">
-        {children}
+      <StaffSidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+      
+      <main className="flex-1 w-full lg:ml-64 relative z-10 flex flex-col min-h-screen max-w-full overflow-x-hidden">
+        {/* Mobile Header */}
+        <div className="lg:hidden p-4 border-b border-white/5 flex items-center gap-4 bg-neutral-900/50 backdrop-blur-md sticky top-0 z-20">
+          <button 
+            onClick={() => setIsSidebarOpen(true)}
+            className="p-2 -ml-2 text-brand-secondary hover:text-white"
+          >
+            <Menu size={24} />
+          </button>
+          <span className="font-semibold tracking-[0.1em] text-xs font-sans">KONCOKU</span>
+        </div>
+
+        <div className="flex-1 p-4 sm:p-6 lg:p-8 w-full max-w-full overflow-x-hidden">
+          {children}
+        </div>
       </main>
       
       {/* Background Glows */}
