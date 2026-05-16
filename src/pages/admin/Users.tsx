@@ -5,12 +5,16 @@ import { collection, query, getDocs, updateDoc, doc, orderBy } from "firebase/fi
 import { db } from "../../lib/firebase";
 import { UserProfile, UserRole } from "../../types";
 import StaffLayout from "../../components/pos/Layout";
+import { ConfirmModal } from "../../components/ConfirmModal";
+import { AlertModal } from "../../components/AlertModal";
 
 export default function AdminUsers() {
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [alertMessage, setAlertMessage] = useState("");
 
   useEffect(() => {
     fetchUsers();
@@ -38,21 +42,21 @@ export default function AdminUsers() {
       setUsers(prev => prev.map(u => u.uid === userId ? { ...u, role: newRole } : u));
     } catch (err) {
       console.error(err);
-      alert("Failed to update role");
+      setAlertMessage("Failed to update role");
     } finally {
       setIsProcessing(false);
     }
   };
 
   const deleteUser = async (userId: string) => {
-    if (!confirm("Are you sure you want to remove this user? This is a soft delete.")) return;
     setIsProcessing(true);
     try {
       await updateDoc(doc(db, "users", userId), { isDeleted: true });
       setUsers(prev => prev.filter(u => u.uid !== userId));
+      setDeleteId(null);
     } catch (err) {
       console.error(err);
-      alert("Failed to delete user");
+      setAlertMessage("Failed to delete user");
     } finally {
       setIsProcessing(false);
     }
@@ -153,7 +157,7 @@ export default function AdminUsers() {
                          <div className="w-[1px] h-6 bg-white/10 mx-1 sm:mx-2 self-center"></div>
                          <button 
                            disabled={isProcessing}
-                           onClick={() => deleteUser(u.uid)}
+                           onClick={() => setDeleteId(u.uid)}
                            className="p-2 rounded-lg transition-all text-brand-secondary/30 hover:text-red-400 hover:bg-red-400/10 disabled:opacity-30"
                            title="Delete User"
                          >
@@ -168,6 +172,21 @@ export default function AdminUsers() {
           </table>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={!!deleteId}
+        title="Remove User"
+        message="Are you sure you want to remove this user? This is a soft delete."
+        isProcessing={isProcessing}
+        onConfirm={() => deleteId && deleteUser(deleteId)}
+        onCancel={() => setDeleteId(null)}
+      />
+
+      <AlertModal
+        isOpen={!!alertMessage}
+        message={alertMessage}
+        onClose={() => setAlertMessage("")}
+      />
     </StaffLayout>
   );
 }

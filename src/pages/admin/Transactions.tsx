@@ -4,11 +4,15 @@ import { db } from "../../lib/firebase";
 import { Transaction } from "../../types";
 import StaffLayout from "../../components/pos/Layout";
 import { Coffee, FileText, Trash2 } from "lucide-react";
+import { ConfirmModal } from "../../components/ConfirmModal";
+import { AlertModal } from "../../components/AlertModal";
 
 export default function AdminTransactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [alertMessage, setAlertMessage] = useState("");
 
   useEffect(() => {
     fetchTransactions();
@@ -27,14 +31,14 @@ export default function AdminTransactions() {
   }
 
   const deleteTransaction = async (id: string) => {
-    if (!confirm("Void this transaction? (Soft delete)")) return;
     setIsProcessing(true);
     try {
       await updateDoc(doc(db, "transactions", id), { isDeleted: true });
       setTransactions(prev => prev.filter(t => t.id !== id));
+      setDeleteId(null);
     } catch (err) {
       console.error(err);
-      alert("Failed to void transaction");
+      setAlertMessage("Failed to void transaction");
     } finally {
       setIsProcessing(false);
     }
@@ -90,7 +94,7 @@ export default function AdminTransactions() {
                     <td className="p-4 sm:p-8 text-right">
                        <button 
                         disabled={isProcessing}
-                        onClick={() => deleteTransaction(t.id)}
+                        onClick={() => setDeleteId(t.id)}
                         className="p-2 bg-white/5 hover:bg-red-500/20 text-brand-secondary/40 hover:text-red-400 rounded-lg transition-all disabled:opacity-30"
                         title="Void Transaction"
                        >
@@ -104,6 +108,21 @@ export default function AdminTransactions() {
           </table>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={!!deleteId}
+        title="Void Transaction"
+        message="Are you sure you want to void this transaction? (Soft delete)"
+        isProcessing={isProcessing}
+        onConfirm={() => deleteId && deleteTransaction(deleteId)}
+        onCancel={() => setDeleteId(null)}
+      />
+
+      <AlertModal
+        isOpen={!!alertMessage}
+        message={alertMessage}
+        onClose={() => setAlertMessage("")}
+      />
     </StaffLayout>
   );
 }

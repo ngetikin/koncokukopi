@@ -5,6 +5,8 @@ import { collection, query, getDocs, addDoc, updateDoc, deleteDoc, doc, serverTi
 import { db } from "../../lib/firebase";
 import { Product, Category } from "../../types";
 import StaffLayout from "../../components/pos/Layout";
+import { ConfirmModal } from "../../components/ConfirmModal";
+import { AlertModal } from "../../components/AlertModal";
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -18,6 +20,7 @@ export default function AdminProducts() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [deleteProductId, setDeleteProductId] = useState<string | null>(null);
   const [deleteCategoryId, setDeleteCategoryId] = useState<string | null>(null);
+  const [alertMessage, setAlertMessage] = useState("");
   
   const [formData, setFormData] = useState({
     name: "",
@@ -68,7 +71,7 @@ export default function AdminProducts() {
       await fetchData();
     } catch (error) {
       console.error(error);
-      alert("Error saving product.");
+      setAlertMessage("Error saving product.");
     } finally {
       setIsProcessing(false);
     }
@@ -88,7 +91,7 @@ export default function AdminProducts() {
       await fetchData();
     } catch (error) {
       console.error(error);
-      alert("Failed to save category");
+      setAlertMessage("Failed to save category");
     } finally {
       setIsProcessing(false);
     }
@@ -102,7 +105,7 @@ export default function AdminProducts() {
       await fetchData();
     } catch (error: any) {
       console.error(error);
-      alert(`Failed to delete product: ${error.message || error.code || 'Unknown error'}`);
+      setAlertMessage(`Failed to delete product: ${error.message || error.code || 'Unknown error'}`);
     } finally {
       setIsProcessing(false);
     }
@@ -116,7 +119,7 @@ export default function AdminProducts() {
       await fetchData();
     } catch (error: any) {
       console.error(error);
-      alert(`Failed to delete category: ${error.message || error.code || 'Unknown error'}`);
+      setAlertMessage(`Failed to delete category: ${error.message || error.code || 'Unknown error'}`);
     } finally {
       setIsProcessing(false);
     }
@@ -392,39 +395,27 @@ export default function AdminProducts() {
         )}
       </AnimatePresence>
       {/* Delete Confirmation Modal */}
-      <AnimatePresence>
-        {(deleteProductId || deleteCategoryId) && (
-          <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 sm:p-6">
-             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => !isProcessing && (setDeleteProductId(null), setDeleteCategoryId(null))} className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
-             <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className="w-full max-w-sm bg-neutral-900 border border-white/10 rounded-[30px] p-6 sm:p-8 relative z-10 shadow-2xl text-center">
-                <h3 className="text-lg sm:text-xl font-light mb-2">Are you sure?</h3>
-                <p className="text-brand-secondary text-xs sm:text-sm mb-6 sm:mb-8">This action cannot be undone.</p>
-                <div className="flex gap-3 sm:gap-4 flex-col sm:flex-row">
-                  <button 
-                    disabled={isProcessing}
-                    onClick={() => {
-                        setDeleteProductId(null);
-                        setDeleteCategoryId(null);
-                    }}
-                    className="w-full sm:flex-1 bg-white/5 py-3 sm:py-4 rounded-xl text-[10px] uppercase font-bold tracking-widest hover:bg-white/10 transition-all disabled:opacity-30 order-2 sm:order-1"
-                  >
-                    Cancel
-                  </button>
-                  <button 
-                    disabled={isProcessing}
-                    onClick={() => {
-                        if (deleteProductId) deleteProduct(deleteProductId);
-                        if (deleteCategoryId) handleDeleteCategory(deleteCategoryId);
-                    }}
-                    className="w-full sm:flex-1 bg-red-500/10 text-red-400 py-3 sm:py-4 rounded-xl text-[10px] uppercase font-bold tracking-widest hover:bg-red-500 hover:text-white transition-all disabled:opacity-30 order-1 sm:order-2"
-                  >
-                    {isProcessing ? "Processing..." : "Delete"}
-                  </button>
-                </div>
-             </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      <ConfirmModal
+        isOpen={!!deleteProductId || !!deleteCategoryId}
+        title="Are you sure?"
+        message="This action cannot be undone."
+        isProcessing={isProcessing}
+        confirmText="Delete"
+        onConfirm={() => {
+            if (deleteProductId) deleteProduct(deleteProductId);
+            if (deleteCategoryId) handleDeleteCategory(deleteCategoryId);
+        }}
+        onCancel={() => {
+            setDeleteProductId(null);
+            setDeleteCategoryId(null);
+        }}
+      />
+
+      <AlertModal
+        isOpen={!!alertMessage}
+        message={alertMessage}
+        onClose={() => setAlertMessage("")}
+      />
     </StaffLayout>
   );
 }

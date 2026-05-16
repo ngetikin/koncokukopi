@@ -6,6 +6,7 @@ import { db } from "../lib/firebase";
 import { Product, Category, TransactionItem } from "../types";
 import { useAuth } from "../contexts/AuthContext";
 import StaffLayout from "../components/pos/Layout";
+import { AlertModal } from "../components/AlertModal";
 
 export default function POS() {
   const { profile } = useAuth();
@@ -19,6 +20,8 @@ export default function POS() {
   const [paymentAmount, setPaymentAmount] = useState<string>("");
   const [showCheckout, setShowCheckout] = useState(false);
   const [showMobileCart, setShowMobileCart] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertTitle, setAlertTitle] = useState("Alert");
 
   useEffect(() => {
     async function fetchData() {
@@ -101,10 +104,12 @@ export default function POS() {
       setPaymentAmount("");
       setShowCheckout(false);
       setShowMobileCart(false);
-      alert("Transaction success! Invoice: " + invoiceCode);
+      setAlertTitle("Success");
+      setAlertMessage("Transaction success! Invoice: " + invoiceCode);
     } catch (error) {
       console.error("Checkout failed:", error);
-      alert("Checkout failed. See console.");
+      setAlertTitle("Error");
+      setAlertMessage("Checkout failed. See console.");
     } finally {
       setIsProcessing(false);
     }
@@ -345,6 +350,13 @@ export default function POS() {
           </div>
         )}
       </AnimatePresence>
+
+      <AlertModal
+        isOpen={!!alertMessage}
+        title={alertTitle}
+        message={alertMessage}
+        onClose={() => setAlertMessage("")}
+      />
     </StaffLayout>
   );
 }
