@@ -1,0 +1,106 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Unique user ID" },
+        "displayName": { "type": "string", "description": "User's full name" },
+        "email": { "type": "string", "format": "email", "description": "User's email address" },
+        "photoURL": { "type": "string", "format": "uri", "description": "User's profile photo URL" },
+        "role": { "type": "string", "enum": ["admin", "cashier", "customer"], "description": "User role" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Account creation timestamp" }
+      },
+      "required": ["uid", "email"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Menu category",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" }
+      },
+      "required": ["name"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Menu item",
+      "type": "object",
+      "properties": {
+        "categoryId": { "type": "string" },
+        "name": { "type": "string" },
+        "price": { "type": "integer" },
+        "imageUrl": { "type": "string" },
+        "isAvailable": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["categoryId", "name", "price", "isAvailable"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "POS Transaction",
+      "type": "object",
+      "properties": {
+        "invoiceCode": { "type": "string" },
+        "cashierId": { "type": "string" },
+        "total": { "type": "integer" },
+        "paymentAmount": { "type": "integer" },
+        "changeAmount": { "type": "integer" },
+        "items": { 
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "productId": { "type": "string" },
+              "name": { "type": "string" },
+              "qty": { "type": "integer" },
+              "price": { "type": "integer" },
+              "subtotal": { "type": "integer" }
+            }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["invoiceCode", "cashierId", "total", "items", "createdAt"]
+    },
+    "Reservation": {
+      "title": "Reservation",
+      "description": "Private coffee space booking",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "UID of the user who made the reservation" },
+        "name": { "type": "string", "description": "Name for the reservation" },
+        "date": { "type": "string", "format": "date", "description": "Reservation date" },
+        "time": { "type": "string", "description": "Reservation time slot" },
+        "guests": { "type": "integer", "description": "Number of guests" },
+        "status": { "type": "string", "enum": ["pending", "confirmed", "cancelled"], "description": "Current status of the reservation" },
+        "notes": { "type": "string", "description": "Optional notes" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Booking timestamp" }
+      },
+      "required": ["userId", "name", "date", "time", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile document"
+    },
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Menu categories"
+    },
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Menu items"
+    },
+    "/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Sales transactions"
+    },
+    "/reservations/{reservationId}": {
+      "schema": "Reservation",
+      "description": "Global reservations collection"
+    }
+  }
+}

@@ -1,0 +1,100 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 3. Primitive Definition
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isSignedIn() { return request.auth != null; }
+    function isVerified() { return isSignedIn() && request.auth.token.email_verified == true; }
+    function isOwner(uid) { return isSignedIn() && request.auth.uid == uid; }
+    function isSuperAdmin() { return isSignedIn() && request.auth.token.email == 'ngetikin.community@gmail.com'; }
+    function isAdmin() { 
+      return isSuperAdmin() || (
+        isSignedIn() && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+    function isStaff() { 
+      return isSuperAdmin() || (
+        isSignedIn() && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'cashier']
+      );
+    }
+
+    // 2. Validation Blueprints
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email']) &&
+             data.uid is string && data.uid.size() <= 128 &&
+             data.email is string && data.email.size() <= 256;
+    }
+
+    function isValidProduct(data) {
+      return data.keys().hasAll(['categoryId', 'name', 'price', 'isAvailable']);
+    }
+
+    function isValidTransaction(data) {
+      return data.keys().hasAll(['invoiceCode', 'cashierId', 'total', 'items', 'createdAt']);
+    }
+
+    function isValidReservation(data) {
+      return data.keys().hasAll(['userId', 'name', 'date', 'time', 'status']) &&
+             data.userId == request.auth.uid &&
+             data.name is string && data.name.size() <= 128 &&
+             data.date is string && data.date.size() <= 32 &&
+             data.time is string && data.time.size() <= 32 &&
+             data.status in ['pending', 'confirmed', 'cancelled'] &&
+             (!('notes' in data) || (data.notes is string && data.notes.size() <= 1000));
+    }
+
+    // Match blocks for collections
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isStaff();
+      allow list: if isStaff();
+      allow create: if isOwner(userId) && isValidUser(incoming());
+      allow update: if isOwner(userId) && (
+        incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoURL']) ||
+        request.auth.token.email == 'ngetikin.community@gmail.com'
+      ) || isAdmin();
+    }
+
+    match /categories/{catId} {
+      allow read: if true;
+      allow create, update, delete: if isStaff();
+    }
+
+    match /products/{prodId} {
+      allow read: if true;
+      allow create, update, delete: if isStaff();
+    }
+
+    match /transactions/{transId} {
+      allow read: if isStaff();
+      allow create: if isStaff() && isValidTransaction(incoming()) && incoming().cashierId == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    match /reservations/{resId} {
+      // 8. Secure List Queries
+      allow list: if isVerified() && existing().userId == request.auth.uid;
+      allow get: if isVerified() && existing().userId == request.auth.uid;
+      
+      allow create: if isVerified() && isValidReservation(incoming()) && incoming().createdAt == request.time;
+      
+      allow update: if isVerified() && existing().userId == request.auth.uid && isValidReservation(incoming()) && (
+        // Allow user to cancel their own
+        (incoming().status == 'cancelled' && incoming().diff(existing()).affectedKeys().hasOnly(['status']))
+      );
+      
+      allow delete: if isVerified() && existing().userId == request.auth.uid && existing().status == 'pending';
+    }
+  }
+}
