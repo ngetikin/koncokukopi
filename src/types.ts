@@ -42,6 +42,8 @@ export interface Transaction {
   total: number;
   paymentAmount: number;
   changeAmount: number;
+  paymentMethod?: 'CASH' | 'QRIS' | 'TRANSFER';
+  note?: string;
   items: TransactionItem[];
   createdAt: any;
   isDeleted?: boolean;

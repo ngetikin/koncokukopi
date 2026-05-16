@@ -22,6 +22,8 @@ export default function POS() {
   const [showMobileCart, setShowMobileCart] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertTitle, setAlertTitle] = useState("Alert");
+  const [paymentMethod, setPaymentMethod] = useState<'CASH' | 'QRIS' | 'TRANSFER'>('CASH');
+  const [note, setNote] = useState("");
 
   useEffect(() => {
     async function fetchData() {
@@ -85,7 +87,9 @@ export default function POS() {
   });
 
   const handleCheckout = async () => {
-    if (cart.length === 0 || !paymentAmount || parseInt(paymentAmount) < total) return;
+    const isCash = paymentMethod === 'CASH';
+    const amountPaid = isCash ? parseInt(paymentAmount) : total;
+    if (cart.length === 0 || (isCash && (!paymentAmount || amountPaid < total))) return;
     
     setIsProcessing(true);
     try {
@@ -94,14 +98,18 @@ export default function POS() {
         invoiceCode,
         cashierId: profile?.uid,
         total,
-        paymentAmount: parseInt(paymentAmount),
-        changeAmount: change,
+        paymentAmount: amountPaid,
+        changeAmount: isCash ? change : 0,
+        paymentMethod,
+        note,
         items: cart,
         createdAt: serverTimestamp()
       });
       
       setCart([]);
       setPaymentAmount("");
+      setPaymentMethod("CASH");
+      setNote("");
       setShowCheckout(false);
       setShowMobileCart(false);
       setAlertTitle("Success");
@@ -313,21 +321,53 @@ export default function POS() {
                    <span className="text-xl sm:text-2xl font-mono text-brand-accent">{total}k</span>
                 </div>
                 
-                <div className="space-y-3">
-                  <label className="text-[10px] uppercase font-bold tracking-[0.3em] text-brand-secondary">Payment Received (k)</label>
+                <div className="space-y-3 pb-4 border-b border-white/5">
+                  <label className="text-[10px] uppercase font-bold tracking-[0.3em] text-brand-secondary">Payment Method</label>
+                  <div className="flex gap-2">
+                    {['CASH', 'QRIS', 'TRANSFER'].map((method) => (
+                      <button
+                        key={method}
+                        onClick={() => setPaymentMethod(method as any)}
+                        className={`flex-1 py-3 text-[10px] font-bold uppercase tracking-widest rounded-xl transition-all border ${
+                          paymentMethod === method 
+                            ? "bg-brand-accent text-white border-brand-accent shadow-[0_0_15px_rgba(217,119,6,0.2)]" 
+                            : "bg-neutral-900 border-white/10 text-brand-secondary hover:border-white/20"
+                        }`}
+                      >
+                        {method}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {paymentMethod === 'CASH' && (
+                  <div className="space-y-3 pb-4 border-b border-white/5">
+                    <label className="text-[10px] uppercase font-bold tracking-[0.3em] text-brand-secondary">Payment Received (k)</label>
+                    <input 
+                      type="number" 
+                      placeholder="0"
+                      value={paymentAmount}
+                      onChange={(e) => setPaymentAmount(e.target.value)}
+                      className="w-full bg-black border border-white/10 rounded-2xl px-4 sm:px-6 py-3 sm:py-4 text-lg sm:text-xl font-mono focus:outline-none focus:border-brand-accent transition-all placeholder:text-neutral-800"
+                      autoFocus
+                    />
+                  </div>
+                )}
+                
+                <div className="space-y-3 pb-4 border-b border-white/5">
+                  <label className="text-[10px] uppercase font-bold tracking-[0.3em] text-brand-secondary">Note (Optional)</label>
                   <input 
-                    type="number" 
-                    placeholder="0"
-                    value={paymentAmount}
-                    onChange={(e) => setPaymentAmount(e.target.value)}
-                    className="w-full bg-black border border-white/10 rounded-2xl px-4 sm:px-6 py-3 sm:py-4 text-lg sm:text-xl font-mono focus:outline-none focus:border-brand-accent transition-all placeholder:text-neutral-800"
-                    autoFocus
+                    type="text" 
+                    placeholder="Add note..."
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    className="w-full bg-black border border-white/10 rounded-2xl px-4 sm:px-6 py-3 text-sm focus:outline-none focus:border-brand-accent transition-all placeholder:text-neutral-800"
                   />
                 </div>
 
-                <div className="flex justify-between py-4 sm:py-6 items-center">
+                <div className="flex justify-between py-2 sm:py-4 items-center">
                    <span className="text-[10px] sm:text-xs text-brand-secondary uppercase tracking-widest">Change</span>
-                   <span className={`text-lg sm:text-xl font-mono ${change > 0 ? "text-green-400" : "text-white/20"}`}>{change}k</span>
+                   <span className={`text-lg sm:text-xl font-mono ${change > 0 ? "text-green-400" : "text-white/20"}`}>{paymentMethod === 'CASH' ? change + 'k' : '-'}</span>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
@@ -339,7 +379,7 @@ export default function POS() {
                    </button>
                    <button 
                     onClick={handleCheckout}
-                    disabled={isProcessing || !paymentAmount || parseInt(paymentAmount) < total}
+                    disabled={isProcessing || (paymentMethod === 'CASH' && (!paymentAmount || parseInt(paymentAmount) < total))}
                     className="w-full sm:flex-1 bg-brand-accent text-white rounded-2xl py-3 sm:py-4 text-[10px] font-bold uppercase tracking-[0.4em] hover:brightness-110 disabled:opacity-30 transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(217,119,6,0.3)]"
                    >
                      {isProcessing ? "Processing..." : "Confirm"} <CreditCard size={14} />
