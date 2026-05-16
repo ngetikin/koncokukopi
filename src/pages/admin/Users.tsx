@@ -66,12 +66,12 @@ export default function AdminUsers() {
   return (
     <StaffLayout adminOnly>
       <div className="space-y-8">
-        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
+        <header className="flex justify-between items-end">
           <div>
-            <h1 className="text-2xl md:text-3xl font-light tracking-tight">User Management</h1>
-            <p className="text-brand-secondary text-[10px] uppercase tracking-[0.3em] mt-1">Manage staff roles and access</p>
+            <h1 className="text-3xl font-light tracking-tight">User Management</h1>
+            <p className="text-brand-secondary text-xs uppercase tracking-[0.3em] mt-1">Manage staff roles and access</p>
           </div>
-          <div className="relative w-full sm:w-72">
+          <div className="relative w-72">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-secondary" size={16} />
             <input 
               type="text" 
@@ -83,9 +83,8 @@ export default function AdminUsers() {
           </div>
         </header>
 
-        <div className="bg-neutral-900/50 border border-white/5 rounded-[30px] md:rounded-[40px] overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left min-w-[600px]">
+        <div className="bg-neutral-900/50 border border-white/5 rounded-[40px] overflow-hidden">
+          <table className="w-full text-left">
             <thead>
               <tr className="border-b border-white/5">
                 <th className="p-8 text-[10px] uppercase tracking-[0.4em] text-brand-secondary">User</th>
@@ -166,7 +165,6 @@ export default function AdminUsers() {
               )}
             </tbody>
           </table>
-          </div>
         </div>
       </div>
     </StaffLayout>

@@ -110,32 +110,32 @@ export default function POS() {
 
   return (
     <StaffLayout>
-      <div className="flex flex-col lg:flex-row gap-8 items-start">
+      <div className="flex h-full gap-8">
         {/* Main POS Content */}
-        <div className="flex-1 space-y-8 w-full order-1">
-          <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+        <div className="flex-1 space-y-8">
+          <header className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl md:text-3xl font-light tracking-tight">Point of Sale</h1>
-              <p className="text-brand-secondary text-[10px] sm:text-xs uppercase tracking-[0.3em] mt-1">Koncoku.Kopi Tegalsari</p>
+              <h1 className="text-3xl font-light tracking-tight">Point of Sale</h1>
+              <p className="text-brand-secondary text-xs uppercase tracking-[0.3em] mt-1">Koncoku.Kopi Tegalsari</p>
             </div>
-            <div className="relative w-full sm:w-80">
+            <div className="relative w-72">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-secondary" size={16} />
               <input 
                 type="text" 
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-neutral-900 border border-white/5 rounded-2xl py-4 pl-12 pr-4 text-sm focus:border-brand-accent transition-all shadow-lg"
+                className="w-full bg-neutral-900 border border-white/5 rounded-2xl py-3 pl-12 pr-4 text-xs focus:border-brand-accent transition-all"
               />
             </div>
           </header>
 
           {/* Categories */}
-          <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide -mx-2 px-2">
+          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
             <button 
               onClick={() => setSelectedCategory("all")}
-              className={`px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap shadow-sm ${
-                selectedCategory === "all" ? "bg-brand-accent text-white shadow-brand-accent/20" : "bg-neutral-900 border border-white/5 text-brand-secondary hover:bg-white/5"
+              className={`px-8 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap ${
+                selectedCategory === "all" ? "bg-brand-accent text-white" : "bg-neutral-900 border border-white/5 text-brand-secondary"
               }`}
             >
               All Items
@@ -144,8 +144,8 @@ export default function POS() {
               <button 
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap shadow-sm ${
-                  selectedCategory === cat.id ? "bg-brand-accent text-white shadow-brand-accent/20" : "bg-neutral-900 border border-white/5 text-brand-secondary hover:bg-white/5"
+                className={`px-8 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap ${
+                  selectedCategory === cat.id ? "bg-brand-accent text-white" : "bg-neutral-900 border border-white/5 text-brand-secondary"
                 }`}
               >
                 {cat.name}
@@ -155,31 +155,31 @@ export default function POS() {
 
           {/* Product Grid */}
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-              {[1,2,3,4,5,6,7,8].map(i => <div key={i} className="aspect-square bg-neutral-900/50 rounded-3xl animate-pulse" />)}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {[1,2,3,4,5,6].map(i => <div key={i} className="aspect-square bg-neutral-900 rounded-3xl animate-pulse" />)}
             </div>
           ) : (
-            <div className="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {filteredProducts.map(product => (
                 <motion.div 
                   key={product.id}
-                  whileHover={{ y: -8 }}
+                  whileHover={{ y: -5 }}
                   onClick={() => addToCart(product)}
-                  className="bg-neutral-900/40 backdrop-blur-sm border border-white/5 rounded-[32px] p-4 cursor-pointer hover:border-brand-accent/40 transition-all group overflow-hidden relative shadow-xl"
+                  className="bg-neutral-900/50 border border-white/5 rounded-3xl p-4 cursor-pointer hover:border-brand-accent/50 transition-all group overflow-hidden relative"
                 >
-                  <div className="aspect-square rounded-2xl overflow-hidden mb-4 bg-black/40">
+                  <div className="aspect-square rounded-2xl overflow-hidden mb-4 bg-black">
                      {product.imageUrl ? (
                         <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" />
                      ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-neutral-800 to-neutral-900"><Coffee className="text-white/5" size={48} /></div>
+                        <div className="w-full h-full flex items-center justify-center"><Coffee className="text-white/10" size={40} /></div>
                      )}
                   </div>
-                  <h3 className="text-sm font-medium mb-1 truncate text-white/90">{product.name}</h3>
-                  <p className="text-brand-accent font-mono text-sm font-light">{product.price.toLocaleString('id-ID')}k</p>
+                  <h3 className="text-sm font-medium mb-1 truncate">{product.name}</h3>
+                  <p className="text-brand-accent font-mono text-sm">{product.price.toLocaleString('id-ID')}k</p>
                   
-                  <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-                    <div className="bg-brand-accent p-2.5 rounded-full text-white shadow-[0_4px_15px_rgba(217,119,6,0.4)]">
-                      <Plus size={18} />
+                  <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="bg-brand-accent p-2 rounded-full text-white shadow-xl">
+                      <Plus size={16} />
                     </div>
                   </div>
                 </motion.div>
@@ -189,15 +189,15 @@ export default function POS() {
         </div>
 
         {/* Cart Sidebar */}
-        <div className="w-full lg:w-[400px] bg-neutral-900/40 backdrop-blur-2xl border border-white/10 rounded-[40px] flex flex-col overflow-hidden shadow-2xl order-2 lg:sticky lg:top-24 h-fit lg:max-h-[calc(100vh-8rem)]">
-          <div className="p-6 md:p-8 border-b border-white/5 flex justify-between items-center bg-white/5">
-            <h2 className="text-base md:text-lg font-light tracking-tight flex items-center gap-3">
-              Current Order <span className="bg-brand-accent text-[10px] font-bold px-2.5 py-1 rounded-full text-white shadow-lg shadow-brand-accent/20">{cart.length}</span>
+        <div className="w-96 bg-neutral-900/50 backdrop-blur-xl border border-white/5 rounded-[40px] flex flex-col overflow-hidden shadow-2xl">
+          <div className="p-8 border-b border-white/5 flex justify-between items-center">
+            <h2 className="text-lg font-light tracking-tight flex items-center gap-2">
+              Current Order <span className="bg-brand-accent text-[10px] font-bold px-2 py-0.5 rounded-full text-white">{cart.length}</span>
             </h2>
-            <button onClick={() => setCart([])} className="text-[10px] uppercase font-bold tracking-[0.2em] text-brand-secondary hover:text-red-400 transition-colors">Clear</button>
+            <button onClick={() => setCart([])} className="text-xs uppercase tracking-widest text-brand-secondary hover:text-red-400 transition-colors">Clear</button>
           </div>
 
-          <div className="flex-1 overflow-y-auto max-h-[50vh] lg:max-h-none p-4 md:p-6 space-y-4 min-h-[150px]">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {cart.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-brand-secondary/30 space-y-4">
                 <ShoppingCart size={48} />
@@ -231,10 +231,10 @@ export default function POS() {
             )}
           </div>
 
-          <div className="p-6 md:p-8 bg-neutral-950/50 border-t border-white/5 space-y-6">
+          <div className="p-8 bg-neutral-950/50 border-t border-white/5 space-y-6">
             <div className="flex justify-between items-center">
-              <span className="text-[10px] text-brand-secondary uppercase tracking-[0.2em]">Total Amount</span>
-              <span className="text-2xl md:text-3xl font-light text-brand-accent">{total.toLocaleString('id-ID')}k</span>
+              <span className="text-xs text-brand-secondary uppercase tracking-[0.2em]">Total Amount</span>
+              <span className="text-3xl font-light text-brand-accent">{total.toLocaleString('id-ID')}k</span>
             </div>
             
             <motion.button 

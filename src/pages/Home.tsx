@@ -5,9 +5,9 @@ import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
 import { collection, query, getDocs, where } from "firebase/firestore";
 import { db } from "../lib/firebase";
+import { Logo } from "../components/Logo";
 
 const IMAGES = {
-  logo: "https://github.com/ngetikin/koncokukopi/blob/main/public/icon.png?raw=true",
   hero: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=2000",
   detail1: "https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&q=80&w=1000",
   detail2: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&q=80&w=1000",
@@ -35,7 +35,7 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
         <a href="#home" className="flex items-center gap-3">
-          <img src={IMAGES.logo} alt="Logo" className="w-10 h-10 rounded-full" />
+          <Logo className="w-10 h-10 rounded-full" />
           <span className="font-semibold tracking-[0.2em] text-sm hidden sm:block font-sans">KONCOKU.KOPI</span>
         </a>
         <div className="flex gap-4 sm:gap-8 items-center text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.3em] font-medium text-brand-secondary">
@@ -341,7 +341,7 @@ const Footer = () => (
     <div className="max-w-7xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-20">
         <div className="space-y-8">
-          <img src={IMAGES.logo} alt="Logo" className="w-16 h-16 rounded-full" />
+          <Logo className="w-16 h-16 rounded-full" />
           <p className="text-brand-secondary text-lg font-light leading-relaxed">
             Quiet coffee space for your slow moments. Private, intimate, and memorable.
           </p>

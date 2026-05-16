@@ -16,6 +16,8 @@ export default function AdminProducts() {
   const [newCatName, setNewCatName] = useState("");
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [deleteProductId, setDeleteProductId] = useState<string | null>(null);
+  const [deleteCategoryId, setDeleteCategoryId] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
     name: "",
@@ -93,10 +95,10 @@ export default function AdminProducts() {
   };
 
   const deleteProduct = async (id: string) => {
-    if (!confirm("Are you sure?")) return;
     setIsProcessing(true);
     try {
       await updateDoc(doc(db, "products", id), { isDeleted: true });
+      setDeleteProductId(null);
       await fetchData();
     } catch (error: any) {
       console.error(error);
@@ -107,10 +109,10 @@ export default function AdminProducts() {
   };
 
   const handleDeleteCategory = async (id: string) => {
-    if (!confirm("Delete category? Items in this category will become uncategorized.")) return;
     setIsProcessing(true);
     try {
       await updateDoc(doc(db, "categories", id), { isDeleted: true });
+      setDeleteCategoryId(null);
       await fetchData();
     } catch (error: any) {
       console.error(error);
@@ -123,15 +125,15 @@ export default function AdminProducts() {
   return (
     <StaffLayout adminOnly>
       <div className="space-y-8">
-        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
+        <header className="flex justify-between items-end">
           <div>
-            <h1 className="text-2xl md:text-3xl font-light tracking-tight">Product Management</h1>
-            <p className="text-brand-secondary text-[10px] uppercase tracking-[0.3em] mt-1">Manage your menu offerings</p>
+            <h1 className="text-3xl font-light tracking-tight">Product Management</h1>
+            <p className="text-brand-secondary text-xs uppercase tracking-[0.3em] mt-1">Manage your menu offerings</p>
           </div>
-          <div className="flex flex-wrap gap-4 w-full sm:w-auto">
+          <div className="flex gap-4">
              <button 
               onClick={() => setIsCategoryModalOpen(true)}
-              className="flex-1 sm:flex-none justify-center bg-neutral-900 border border-white/5 px-6 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-white/5 transition-all flex items-center gap-2"
+              className="bg-neutral-900 border border-white/5 px-6 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-white/5 transition-all flex items-center gap-2"
             >
               <CatIcon size={14} /> Categories
             </button>
@@ -141,7 +143,7 @@ export default function AdminProducts() {
                 setFormData({ name: "", categoryId: "", price: "", imageUrl: "", isAvailable: true });
                 setIsModalOpen(true);
               }}
-              className="flex-1 sm:flex-none justify-center bg-brand-accent text-white px-8 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-[0.4em] hover:brightness-110 transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(217,119,6,0.3)]"
+              className="bg-brand-accent text-white px-8 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-[0.4em] hover:brightness-110 transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(217,119,6,0.3)]"
             >
               <Plus size={14} /> Add Product
             </button>
@@ -149,9 +151,8 @@ export default function AdminProducts() {
         </header>
 
         {/* Table/Grid */}
-        <div className="bg-neutral-900/50 border border-white/5 rounded-[30px] md:rounded-[40px] overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left min-w-[600px]">
+        <div className="bg-neutral-900/50 border border-white/5 rounded-[40px] overflow-hidden">
+          <table className="w-full text-left">
             <thead>
               <tr className="border-b border-white/5">
                 <th className="p-8 text-[10px] uppercase tracking-[0.4em] text-brand-secondary">Image</th>
@@ -211,7 +212,7 @@ export default function AdminProducts() {
                        </button>
                        <button 
                         disabled={isProcessing}
-                        onClick={() => deleteProduct(p.id)}
+                        onClick={() => setDeleteProductId(p.id)}
                         className="p-3 bg-white/5 hover:bg-red-500 hover:text-white rounded-xl transition-all disabled:opacity-30"
                        >
                          <Trash2 size={14} />
@@ -222,7 +223,6 @@ export default function AdminProducts() {
               )}
             </tbody>
           </table>
-          </div>
         </div>
       </div>
 
@@ -231,14 +231,14 @@ export default function AdminProducts() {
         {isModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => !isProcessing && setIsModalOpen(false)} className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="w-full max-w-xl bg-neutral-900 border border-white/10 rounded-[30px] md:rounded-[40px] p-6 md:p-10 relative z-10 shadow-2xl overflow-y-auto max-h-[90vh]">
-               <div className="flex justify-between items-center mb-8 md:mb-10">
-                  <h2 className="text-xl md:text-2xl font-light">{editProduct ? "Edit Product" : "New Item"}</h2>
-                  <button disabled={isProcessing} onClick={() => setIsModalOpen(false)} className="disabled:opacity-30 p-2"><X size={20} /></button>
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="w-full max-w-xl bg-neutral-900 border border-white/10 rounded-[40px] p-10 relative z-10 shadow-2xl">
+               <div className="flex justify-between items-center mb-10">
+                  <h2 className="text-2xl font-light">{editProduct ? "Edit Product" : "New Item"}</h2>
+                  <button disabled={isProcessing} onClick={() => setIsModalOpen(false)} className="disabled:opacity-30"><X size={20} /></button>
                </div>
                
                <form onSubmit={handleProductSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label className="text-[10px] uppercase font-bold tracking-[0.3em] text-brand-secondary ml-1">Name</label>
                       <input 
@@ -265,7 +265,7 @@ export default function AdminProducts() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label className="text-[10px] uppercase font-bold tracking-[0.3em] text-brand-secondary ml-1">Price (k)</label>
                       <input 
@@ -343,7 +343,7 @@ export default function AdminProducts() {
                          </button>
                          <button 
                           disabled={isProcessing}
-                          onClick={() => handleDeleteCategory(c.id)} 
+                          onClick={() => setDeleteCategoryId(c.id)} 
                           className="text-brand-secondary hover:text-red-400 disabled:opacity-30"
                          >
                             <Trash2 size={14} />
@@ -383,6 +383,40 @@ export default function AdminProducts() {
                  )}
                </div>
             </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+      {/* Delete Confirmation Modal */}
+      <AnimatePresence>
+        {(deleteProductId || deleteCategoryId) && (
+          <div className="fixed inset-0 z-[70] flex items-center justify-center p-6">
+             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => !isProcessing && (setDeleteProductId(null), setDeleteCategoryId(null))} className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="w-full max-w-sm bg-neutral-900 border border-white/10 rounded-[30px] p-8 relative z-10 shadow-2xl text-center">
+                <h3 className="text-xl font-light mb-2">Are you sure?</h3>
+                <p className="text-brand-secondary text-sm mb-8">This action cannot be undone.</p>
+                <div className="flex gap-4">
+                  <button 
+                    disabled={isProcessing}
+                    onClick={() => {
+                        setDeleteProductId(null);
+                        setDeleteCategoryId(null);
+                    }}
+                    className="flex-1 bg-white/5 py-4 rounded-xl text-[10px] uppercase font-bold tracking-widest hover:bg-white/10 transition-all disabled:opacity-30"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    disabled={isProcessing}
+                    onClick={() => {
+                        if (deleteProductId) deleteProduct(deleteProductId);
+                        if (deleteCategoryId) handleDeleteCategory(deleteCategoryId);
+                    }}
+                    className="flex-1 bg-red-500/10 text-red-400 py-4 rounded-xl text-[10px] uppercase font-bold tracking-widest hover:bg-red-500 hover:text-white transition-all disabled:opacity-30"
+                  >
+                    {isProcessing ? "Processing..." : "Delete"}
+                  </button>
+                </div>
+             </motion.div>
           </div>
         )}
       </AnimatePresence>

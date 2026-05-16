@@ -56,21 +56,21 @@ export default function AdminReports() {
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-           <div className="bg-neutral-900/50 border border-white/5 rounded-[30px] md:rounded-[40px] p-8 md:p-10 flex flex-col items-center justify-center text-center">
+           <div className="bg-neutral-900/50 border border-white/5 rounded-[40px] p-10 flex flex-col items-center justify-center text-center">
               <span className="text-[10px] uppercase font-bold tracking-[0.4em] text-brand-secondary mb-4">Total Revenue Today</span>
-              <span className="text-4xl md:text-5xl font-light text-brand-accent mb-2">{stats.totalSales.toLocaleString('id-ID')}k</span>
-              <p className="text-[10px] md:text-xs text-brand-secondary/40 tracking-widest uppercase">Indonesian Rupiah (IDR)</p>
+              <span className="text-5xl font-light text-brand-accent mb-2">{stats.totalSales.toLocaleString('id-ID')}k</span>
+              <p className="text-xs text-brand-secondary/40 tracking-widest uppercase">Indonesian Rupiah (IDR)</p>
            </div>
-           <div className="bg-neutral-900/50 border border-white/5 rounded-[30px] md:rounded-[40px] p-8 md:p-10 flex flex-col items-center justify-center text-center">
+           <div className="bg-neutral-900/50 border border-white/5 rounded-[40px] p-10 flex flex-col items-center justify-center text-center">
               <span className="text-[10px] uppercase font-bold tracking-[0.4em] text-brand-secondary mb-4">Successful Transactions</span>
-              <span className="text-4xl md:text-5xl font-light text-white mb-2">{stats.totalTrans}</span>
-              <p className="text-[10px] md:text-xs text-brand-secondary/40 tracking-widest uppercase">Orders Completed Today</p>
+              <span className="text-5xl font-light text-white mb-2">{stats.totalTrans}</span>
+              <p className="text-xs text-brand-secondary/40 tracking-widest uppercase">Orders Completed Today</p>
            </div>
         </div>
 
         <div className="space-y-8">
            <h2 className="text-xl font-light tracking-tight">Top 5 Best Selling Products</h2>
-           <div className="bg-neutral-900/50 border border-white/5 rounded-[30px] md:rounded-[40px] p-6 md:p-10 h-[400px]">
+           <div className="bg-neutral-900/50 border border-white/5 rounded-[40px] p-10 h-[400px]">
               {loading ? (
                 <div className="h-full flex items-center justify-center animate-pulse text-brand-secondary uppercase tracking-[0.3em] text-xs">Generating data...</div>
               ) : data.length === 0 ? (

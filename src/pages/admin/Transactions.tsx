@@ -48,9 +48,8 @@ export default function AdminTransactions() {
           <p className="text-brand-secondary text-xs uppercase tracking-[0.3em] mt-1">Review past sales and invoices</p>
         </header>
 
-        <div className="bg-neutral-900/50 border border-white/5 rounded-[30px] md:rounded-[40px] overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left min-w-[700px]">
+        <div className="bg-neutral-900/50 border border-white/5 rounded-[40px] overflow-hidden">
+          <table className="w-full text-left">
             <thead>
               <tr className="border-b border-white/5">
                 <th className="p-8 text-[10px] uppercase tracking-[0.4em] text-brand-secondary">Invoice</th>
@@ -103,7 +102,6 @@ export default function AdminTransactions() {
               )}
             </tbody>
           </table>
-          </div>
         </div>
       </div>
     </StaffLayout>
