@@ -1,5 +1,5 @@
-import { motion } from "motion/react";
-import { Coffee, Instagram, MapPin, Clock, LogOut, User as UserIcon } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import { Coffee, Instagram, MapPin, Clock, LogOut, User as UserIcon, Menu as MenuIcon, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
@@ -20,6 +20,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const { user, profile, logout, isStaff } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -38,7 +39,7 @@ const Navbar = () => {
           <Logo className="w-10 h-10 rounded-full" />
           <span className="font-semibold tracking-[0.2em] text-sm hidden sm:block font-sans">KONCOKU.KOPI</span>
         </a>
-        <div className="flex gap-4 sm:gap-8 items-center text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.3em] font-medium text-brand-secondary">
+        <div className="hidden md:flex gap-4 sm:gap-8 items-center text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.3em] font-medium text-brand-secondary">
           <a href="#about" className="hover:text-brand-text transition-colors">About</a>
           <a href="#menu" className="hover:text-brand-text transition-colors">Menu</a>
           <a href="#location" className="hover:text-brand-text transition-colors">Space</a>
@@ -95,7 +96,79 @@ const Navbar = () => {
             </Link>
           )}
         </div>
+
+        <div className="flex md:hidden items-center gap-4">
+          <button
+            className="text-white hover:text-brand-accent transition-colors"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X size={24} /> : <MenuIcon size={24} />}
+          </button>
+        </div>
       </div>
+
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="md:hidden absolute top-full left-0 w-full bg-brand-bg/95 backdrop-blur-xl border-b border-white/5 py-8 px-6 flex flex-col gap-6"
+          >
+            <a href="#about" onClick={() => setMobileMenuOpen(false)} className="text-[11px] uppercase tracking-[0.3em] font-medium text-brand-secondary hover:text-white transition-colors">About</a>
+            <a href="#menu" onClick={() => setMobileMenuOpen(false)} className="text-[11px] uppercase tracking-[0.3em] font-medium text-brand-secondary hover:text-white transition-colors">Menu</a>
+            <a href="#location" onClick={() => setMobileMenuOpen(false)} className="text-[11px] uppercase tracking-[0.3em] font-medium text-brand-secondary hover:text-white transition-colors">Space</a>
+            <a href="#gallery" onClick={() => setMobileMenuOpen(false)} className="text-[11px] uppercase tracking-[0.3em] font-medium text-brand-secondary hover:text-white transition-colors">Gallery</a>
+            
+            <div className="w-full h-[1px] bg-white/10 my-2" />
+
+            {user ? (
+               <div className="flex flex-col gap-4">
+                 <div className="flex items-center gap-3 mb-2">
+                   {user.photoURL ? (
+                     <img src={user.photoURL} className="w-10 h-10 rounded-full" alt="avatar" />
+                   ) : (
+                     <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
+                       <UserIcon size={18} className="text-brand-secondary" />
+                     </div>
+                   )}
+                   <div>
+                     <p className="text-white text-sm font-bold tracking-wider">{user.displayName}</p>
+                     <p className="text-brand-secondary text-xs">{user.email}</p>
+                   </div>
+                 </div>
+                 
+                 {isStaff && (
+                    <Link 
+                      to="/pos"
+                      className="flex items-center gap-3 text-brand-accent hover:brightness-110 py-2 transition-colors uppercase text-[10px] tracking-widest font-bold"
+                    >
+                      <Coffee size={14} /> <span>Open POS</span>
+                    </Link>
+                  )}
+                  
+                  <button 
+                    onClick={() => {
+                      logout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="flex items-center gap-3 text-brand-secondary hover:text-red-400 py-2 transition-colors uppercase text-[10px] tracking-widest font-bold"
+                  >
+                    <LogOut size={14} /> <span>Sign Out</span>
+                  </button>
+               </div>
+            ) : (
+              <Link 
+                to="/auth" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full text-center px-6 py-3 bg-brand-accent text-white rounded-full text-[10px] font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(217,119,6,0.2)]"
+              >
+                Sign In
+              </Link>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };
